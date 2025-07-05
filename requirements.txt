@@ -2,10 +2,8 @@ streamlit
 joblib
 tldextract
 requests
-ssl
 whois
 numpy
-sklearn
 scikit-learn
 pandas
 xgboost
@@ -22,6 +20,6 @@ pytz
 pywin32
 pywinpty
 pydantic
-pydantic_core
+pydantic-core
 fastapi
 fastparquet
