@@ -5,6 +5,7 @@ requests
 ssl
 whois
 numpy
+sklearn
 scikit-learn
 pandas
 xgboost
