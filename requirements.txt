@@ -17,10 +17,5 @@ pydeck
 pyzmq
 python-whois
 pytz
-pywin32
-pywinpty
-pydantic
-pydantic-core
-fastapi
-fastparquet
+
 
