@@ -1,7 +1,10 @@
 streamlit
-numpy
-xgboost
 joblib
 tldextract
 requests
-python-whois
+ssl
+whois
+numpy
+scikit-learn
+pandas
+xgboost
