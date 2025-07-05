@@ -3,6 +3,7 @@ joblib
 tldextract
 requests
 ssl
+sklearn
 whois
 numpy
 scikit-learn
