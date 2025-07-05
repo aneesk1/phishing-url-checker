@@ -100,17 +100,48 @@ st.markdown("Enter a website URL to check if it's **safe or malicious**.")
 # URL input and button for prediction
 url_input = st.text_input("🔗 Enter URL (e.g., https://netflix.com)", key="url_input")
 
+# We cache the result based on URL input so that it doesn't change on repeated clicks for the same URL
+@st.cache_data
+def get_prediction(url_input):
+    features = extract_url_features(url_input)
+    if features is not None:
+        scaled = phishing_scaler.transform(features)
+        prediction = phishing_model.predict(scaled)
+        prediction_prob = phishing_model.predict_proba(scaled)
+
+        confidence = prediction_prob[0][1] * 100  # Confidence score for malicious prediction
+        
+        # Classify threat level
+        if confidence > 90:
+            threat_level = "High Threat"
+        elif confidence > 70:
+            threat_level = "Medium Threat"
+        else:
+            threat_level = "Low Threat"
+
+        # Risk Category Based on URL content
+        if "login" in url_input.lower() or "signin" in url_input.lower():
+            risk_category = "Credential Harvesting"
+        elif "payment" in url_input.lower() or "bank" in url_input.lower():
+            risk_category = "Financial Fraud"
+        else:
+            risk_category = "General Phishing"
+
+        return prediction, confidence, threat_level, risk_category
+    else:
+        return None, None, None, None
+
+
 if st.button("Check URL"):
     if url_input:
         with st.spinner("🔍 Analyzing..."):
-            features = extract_url_features(url_input)
-            if features is not None:
-                scaled = phishing_scaler.transform(features)
-                prediction = phishing_model.predict(scaled)
+            prediction, confidence, threat_level, risk_category = get_prediction(url_input)
+
+            if prediction is not None:
                 if prediction[0] == 1:
-                    # Hide internal error messages and just show phishing result
-                    st.error("🚨 Malicious Website Detected!")
+                    st.error(f"🚨 Malicious Website Detected!\nConfidence: {confidence:.2f}%\nThreat Level: {threat_level}\nRisk Category: {risk_category}")
                 else:
-                    st.success("✅ Authentic Website")
+                    st.success(f"✅ Authentic Website\nConfidence: {confidence:.2f}%\nThreat Level: {threat_level}\nRisk Category: {risk_category}")
     else:
         st.warning("Please enter a valid URL to check.")
+
